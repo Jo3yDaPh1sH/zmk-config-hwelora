@@ -40,3 +40,28 @@ kscan0: kscan {
 
     };
 };
+
+&spi1 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    mosi-pin = <31>;  // WS2812 data line connected here
+    sck-pin = <5>;    // Required for SPI peripheral, not wired
+    miso-pin = <7>;   // Required for SPI peripheral, not wired
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+        label = "WS2812";
+        reg = <0>;
+        spi-max-frequency = <4000000>;
+        chain-length = <35>;  // Adjust to match your actual LED count
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+    };
+};
+
+&{/} {
+    chosen {
+        zmk,underglow = &led_strip;
+    };
+};
